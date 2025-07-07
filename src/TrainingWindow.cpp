@@ -67,7 +67,6 @@ void TrainingWindow::OnCorrect(wxCommandEvent& event) {
         dictionary->save();
         ShowNextCard();
     } catch (const std::exception& e) {
-        // Handle error, e.g., wxMessageBox
     }
 }
 
@@ -78,7 +77,6 @@ void TrainingWindow::OnIncorrect(wxCommandEvent& event) {
         dictionary->save();
         ShowNextCard();
     } catch (const std::exception& e) {
-        // Handle error
     }
 }
 

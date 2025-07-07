@@ -56,7 +56,7 @@ void EditWordsWindow::OnDelete(wxCommandEvent& event) {
         dictionary->remove(item);
         dictionary->save();
         listCtrl->DeleteItem(item);
-        // Обновить индексы оставшихся элементов
+        
         for (long i = 0; i < listCtrl->GetItemCount(); ++i) {
             listCtrl->SetItemData(i, i);
         }
