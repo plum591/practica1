@@ -21,7 +21,7 @@ public:
     Flashcard getRandom() const;
 
     size_t getRandomIndex() const;
-    Flashcard& getFlashcard(size_t index); // Ensure get is public and returns reference
+    Flashcard& getFlashcard(size_t index);
     void incrementCorrect(size_t index);
     void incrementIncorrect(size_t index);
 };

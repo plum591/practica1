@@ -7,8 +7,8 @@
 class EditFlashcardDialog : public wxDialog {
 public:
     EditFlashcardDialog(wxWindow* parent, Flashcard* card);
-    std::string GetUnknown() const;
-    std::string GetTranslation() const;
+    wxString GetUnknown() const;
+    wxString GetTranslation() const;
 private:
     Flashcard* flashcard;
     wxTextCtrl* unknownCtrl;

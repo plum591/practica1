@@ -3,6 +3,7 @@
 
 EditWordsWindow::EditWordsWindow(wxWindow* parent, Dictionary* dict)
     : wxDialog(parent, wxID_ANY, "Edit words", wxDefaultPosition, wxSize(500, 400)), dictionary(dict) {
+    Centre();
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

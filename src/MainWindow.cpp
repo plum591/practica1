@@ -5,6 +5,7 @@
 
 MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Flashcard App", wxDefaultPosition, wxSize(800, 600)),
     buttonNormal(60, 60, 60), buttonHover(40, 40, 40) {
+    Centre();
     dictionary.load();
 
     wxPanel* panel = new wxPanel(this);

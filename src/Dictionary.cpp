@@ -1,33 +1,50 @@
 #include "Dictionary.h"
+#include <wx/file.h>    
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h> 
 #include <fstream>
 #include <sstream>
 
 void Dictionary::load() {
-    std::ifstream file(filename);
-    if (!file.is_open()) return;
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string unknown, translation;
-        int correct, incorrect;
-        std::getline(ss, unknown, '|');
-        std::getline(ss, translation, '|');
-        ss >> correct >> incorrect;
-        flashcards.emplace_back(unknown, translation);
-        flashcards.back().correct_count = correct;
-        flashcards.back().incorrect_count = incorrect;
+    if (wxFile::Exists(filename)) {
+        wxFileInputStream input(filename);
+        if (input.IsOk()) {
+            wxTextInputStream text(input, "\t\n\r", wxConvUTF8);
+            while (!input.Eof()) {
+                wxString line = text.ReadLine();
+                wxArrayString parts = wxSplit(line, '|');
+                if (parts.size() >= 2) {
+                    wxString unknown = parts[0];
+                    wxString translation = parts[1];
+                    int correct = 0, incorrect = 0;
+                    if (parts.size() >= 3) {
+                        wxArrayString stats = wxSplit(parts[2], ' ');
+                        if (stats.size() == 2) {
+                            long tempCorrect, tempIncorrect;
+                            stats[0].ToLong(&tempCorrect);
+                            stats[1].ToLong(&tempIncorrect);
+                            correct = static_cast<int>(tempCorrect);
+                            incorrect = static_cast<int>(tempIncorrect);
+                        }
+                    }
+                    Flashcard card(unknown, translation);
+                    card.correct_count = correct;
+                    card.incorrect_count = incorrect;
+                    flashcards.push_back(card);
+                }
+            }
+        }
     }
-    file.close();
 }
 
 void Dictionary::save() {
-    std::ofstream file(filename);
-    for (const auto& card : flashcards) {
-        file << card.unknown << "|" << card.translation << "|"
-             << card.correct_count << " " << card.incorrect_count << "\n";
+    wxFileOutputStream output(filename);
+    if (output.IsOk()) {
+        wxTextOutputStream text(output, wxEOL_NATIVE, wxConvUTF8);
+        for (const auto& card : flashcards) {
+            text << card.unknown << "|" << card.translation << "|" << card.correct_count << " " << card.incorrect_count << "\n";
+        }
     }
-    file.close();
 }
 
 void Dictionary::add(const Flashcard& card) {
@@ -55,25 +72,6 @@ Flashcard& Dictionary::get(size_t index) {
 
 size_t Dictionary::size() const {
     return flashcards.size();
-}
-
-Flashcard Dictionary::getRandom() const {
-    if (flashcards.empty()) {
-        throw std::runtime_error("No flashcards available");
-    }
-    int total_weight = 0;
-    for (const auto& card : flashcards) {
-        total_weight += card.incorrect_count + 1;
-    }
-    int r = rand() % total_weight;
-    int cumulative = 0;
-    for (const auto& card : flashcards) {
-        cumulative += card.incorrect_count + 1;
-        if (r < cumulative) {
-            return card;
-        }
-    }
-    return flashcards.back();
 }
 
 size_t Dictionary::getRandomIndex() const {

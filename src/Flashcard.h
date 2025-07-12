@@ -1,16 +1,17 @@
 #ifndef FLASHCARD_H
 #define FLASHCARD_H
 
-#include <string>
+#include <wx/string.h>
 
 class Flashcard {
 public:
-    std::string unknown;
-    std::string translation;
+    wxString unknown;
+    wxString translation;
     int correct_count = 0;
     int incorrect_count = 0;
 
-    Flashcard(const std::string& u, const std::string& t) : unknown(u), translation(t) {}
+    Flashcard() : unknown(""), translation(""), correct_count(0), incorrect_count(0) {}
+    Flashcard(const wxString& u, const wxString& t) : unknown(u), translation(t) {}
 };
 
 #endif
