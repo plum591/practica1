@@ -2,35 +2,23 @@
 #include <wx/stattext.h>
 
 TrainingWindow::TrainingWindow(wxWindow* parent, Dictionary* dict)
-    : wxFrame(parent, wxID_ANY, "Train", wxDefaultPosition, wxSize(300, 300), wxSTAY_ON_TOP | wxDEFAULT_FRAME_STYLE | wxRESIZE_BORDER), dictionary(dict), currentIndex(0) {
+    : wxFrame(parent, wxID_ANY, "Train", wxDefaultPosition, wxSize(300, 200), wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER), dictionary(dict), currentIndex(0) {
+    SetMinSize(wxSize(300, 200));
+    SetMaxSize(wxSize(300, 200));
     Centre();
     wxPanel* panel = new wxPanel(this);
-    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    wordLabel = new wxStaticText(panel, wxID_ANY, "");
-    translationLabel = new wxStaticText(panel, wxID_ANY, "");
-    translationLabel->Hide(); // Исправлено: удалён параметр true
+    wordLabel = new wxStaticText(panel, wxID_ANY, "", wxPoint(150, 50));
+    translationLabel = new wxStaticText(panel, wxID_ANY, "", wxPoint(150, 80));
 
-    checkButton = new wxButton(panel, wxID_ANY, "Check");
-    correctButton = new wxButton(panel, wxID_ANY, "Correct");
-    incorrectButton = new wxButton(panel, wxID_ANY, "Incorrect");
-    finishButton = new wxButton(panel, wxID_ANY, "Finish");
+    checkButton = new wxButton(panel, wxID_ANY, "Check", wxPoint(125, 110), wxSize(50, 30));
+    correctButton = new wxButton(panel, wxID_ANY, "Correct", wxPoint(100, 110), wxSize(50, 30));
+    incorrectButton = new wxButton(panel, wxID_ANY, "Incorrect", wxPoint(150, 110), wxSize(50, 30));
+    finishButton = new wxButton(panel, wxID_ANY, "Finish", wxPoint(125, 150), wxSize(50, 30));
 
-    wxBoxSizer* answerSizer = new wxBoxSizer(wxHORIZONTAL);
-    answerSizer->Add(correctButton, 0, wxALL, 5);
-    answerSizer->AddStretchSpacer(1);
-    answerSizer->Add(incorrectButton, 0, wxALL, 5);
-
-    mainSizer->Add(wordLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10);
-    mainSizer->Add(translationLabel, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 10);
-    mainSizer->Add(checkButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-    mainSizer->Add(answerSizer, 0, wxALL | wxEXPAND, 5);
-    mainSizer->Add(finishButton, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-
+    translationLabel->Hide();
     correctButton->Hide();
     incorrectButton->Hide();
-
-    panel->SetSizer(mainSizer);
 
     checkButton->Bind(wxEVT_BUTTON, &TrainingWindow::OnCheck, this);
     correctButton->Bind(wxEVT_BUTTON, &TrainingWindow::OnCorrect, this);
@@ -50,9 +38,8 @@ void TrainingWindow::ShowNextCard() {
         checkButton->Show();
         correctButton->Hide();
         incorrectButton->Hide();
-        Layout();
     } catch (const std::exception& e) {
-        wxMessageBox("No flashcards available", "Error1", wxOK | wxICON_ERROR);
+        wxMessageBox("Not availabe flashcards", "Error1", wxOK | wxICON_ERROR);
         Close(true);
     }
 }
@@ -64,7 +51,6 @@ void TrainingWindow::OnCheck(wxCommandEvent& event) {
     checkButton->Hide();
     correctButton->Show();
     incorrectButton->Show();
-    Layout();
 }
 
 void TrainingWindow::OnCorrect(wxCommandEvent& event) {
@@ -91,6 +77,6 @@ void TrainingWindow::OnIncorrect(wxCommandEvent& event) {
 
 void TrainingWindow::OnFinish(wxCommandEvent& event) {
     wxString stats = wxString::Format("Correct answers: %d\n Incorrect answers: %d", sessionCorrect, sessionIncorrect);
-    wxMessageBox(stats, "Session statistics", wxOK | wxICON_INFORMATION);
+    wxMessageBox(stats, "Session statistics:", wxOK | wxICON_INFORMATION);
     Close(true);
 }
