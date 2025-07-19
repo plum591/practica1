@@ -2,14 +2,16 @@
 #include "EditFlashcardDialog.h"
 
 EditWordsWindow::EditWordsWindow(wxWindow* parent, Dictionary* dict)
-    : wxDialog(parent, wxID_ANY, "Edit words", wxDefaultPosition, wxSize(500, 400)), dictionary(dict) {
+    : wxDialog(parent, wxID_ANY, "Edit Words", wxDefaultPosition, wxSize(400, 300), wxDEFAULT_DIALOG_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX), dictionary(dict) {
+    SetMinSize(wxSize(400, 300));
+    SetMaxSize(wxSize(400, 300));
     Centre();
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 
-    listCtrl = new wxListCtrl(panel, wxID_ANY, wxDefaultPosition, wxSize(400, 300), wxLC_REPORT);
-    listCtrl->InsertColumn(0, "Unknown word", wxLIST_FORMAT_LEFT, 200);
-    listCtrl->InsertColumn(1, "Translate", wxLIST_FORMAT_LEFT, 200);
+    listCtrl = new wxListCtrl(panel, wxID_ANY, wxDefaultPosition, wxSize(400, 200), wxLC_REPORT);
+    listCtrl->InsertColumn(0, "Unknown Word", wxLIST_FORMAT_LEFT, 200);
+    listCtrl->InsertColumn(1, "Translation", wxLIST_FORMAT_LEFT, 200);
 
     for (size_t i = 0; i < dictionary->size(); ++i) {
         const Flashcard& card = dictionary->get(i);
@@ -26,8 +28,10 @@ EditWordsWindow::EditWordsWindow(wxWindow* parent, Dictionary* dict)
     buttonSizer->Add(deleteButton, 0, wxALL, 5);
     buttonSizer->Add(doneButton, 0, wxALL, 5);
 
-    sizer->Add(listCtrl, 1, wxEXPAND | wxALL, 5);
-    sizer->Add(buttonSizer, 0, wxALIGN_CENTER);
+    sizer->AddStretchSpacer();
+    sizer->Add(listCtrl, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    sizer->Add(buttonSizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    sizer->AddStretchSpacer();
 
     panel->SetSizer(sizer);
 
@@ -44,6 +48,10 @@ void EditWordsWindow::OnEdit(wxCommandEvent& event) {
         if (dialog.ShowModal() == wxID_OK) {
             card.unknown = dialog.GetUnknown();
             card.translation = dialog.GetTranslation();
+            if (card.unknown.Length() > 20 || card.translation.Length() > 20) {
+                wxMessageBox("Words must not exceed 20 characters.", "Error", wxOK | wxICON_ERROR);
+                return;
+            }
             dictionary->save();
             listCtrl->SetItem(item, 0, card.unknown);
             listCtrl->SetItem(item, 1, card.translation);
@@ -57,7 +65,6 @@ void EditWordsWindow::OnDelete(wxCommandEvent& event) {
         dictionary->remove(item);
         dictionary->save();
         listCtrl->DeleteItem(item);
-        
         for (long i = 0; i < listCtrl->GetItemCount(); ++i) {
             listCtrl->SetItemData(i, i);
         }
