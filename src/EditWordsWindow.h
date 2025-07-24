@@ -8,9 +8,11 @@
 class EditWordsWindow : public wxDialog {
 public:
     EditWordsWindow(wxWindow* parent, Dictionary* dict);
+    
 private:
     Dictionary* dictionary;
     wxListCtrl* listCtrl;
+
     void OnEdit(wxCommandEvent& event);
     void OnDelete(wxCommandEvent& event);
     void OnDone(wxCommandEvent& event);

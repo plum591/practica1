@@ -11,6 +11,7 @@ private:
     Dictionary dictionary;
     wxColour buttonNormal;
     wxColour buttonHover;
+    
     void OnAddWords(wxCommandEvent& event);
     void OnEditWords(wxCommandEvent& event);
     void OnTraining(wxCommandEvent& event);

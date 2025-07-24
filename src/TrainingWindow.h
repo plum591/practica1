@@ -17,6 +17,7 @@ private:
     wxButton* incorrectButton;
     wxButton* finishButton;
     wxButton* toggleButton;
+    
     size_t currentIndex;
     int sessionCorrect = 0;
     int sessionIncorrect = 0;

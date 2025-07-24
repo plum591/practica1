@@ -7,6 +7,7 @@ class Flashcard {
 public:
     wxString unknown;
     wxString translation;
+    
     int correct_count;
     int incorrect_count;
 
