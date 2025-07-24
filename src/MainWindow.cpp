@@ -3,7 +3,8 @@
 #include "EditWordsWindow.h"
 #include "TrainingWindow.h"
 
-MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Flashcard App", wxDefaultPosition, wxSize(800, 600), wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX) {
+MainWindow::MainWindow() : wxFrame(nullptr, wxID_ANY, "Flashcard App", wxDefaultPosition, wxSize(800, 600), 
+wxDEFAULT_FRAME_STYLE & ~wxRESIZE_BORDER & ~wxMAXIMIZE_BOX) {
     SetMinSize(wxSize(800, 600));
     SetMaxSize(wxSize(800, 600));
     Centre();

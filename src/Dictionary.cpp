@@ -1,9 +1,6 @@
 #include "Dictionary.h"
-#include <wx/file.h>    
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h> 
-#include <fstream>
-#include <sstream>
 
 void Dictionary::load() {
     if (wxFile::Exists(filename)) {
@@ -80,12 +77,14 @@ size_t Dictionary::getRandomIndex() const {
     }
     int total_weight = 0;
     for (const auto& card : flashcards) {
-        total_weight += card.incorrect_count + 1;
+        int weight = std::max(1, card.incorrect_count + 1 - card.correct_count);
+        total_weight += weight;
     }
     int r = rand() % total_weight;
     int cumulative = 0;
     for (size_t i = 0; i < flashcards.size(); ++i) {
-        cumulative += flashcards[i].incorrect_count + 1;
+        int weight = std::max(1, flashcards[i].incorrect_count + 1 - flashcards[i].correct_count);
+        cumulative += weight;
         if (r < cumulative) {
             return i;
         }
